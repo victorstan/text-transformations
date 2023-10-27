@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Concatenate Words</title>
+</head>
+<body>
+  <h1>Concatenate Words</h1>
+</br>
+</br>
+  <div>
+    <textarea id="wordInput" rows="10" cols="30" placeholder="Paste words here, one per line" oninput="concatenateWords()"></textarea>
+  </div>
+  <button id="copyButton" onclick="copyToClipboard()">Copy</button>
+  <p>Result:</p>
+  <p id="result"></p>
+
+  <script>
+    function concatenateWords() {
+      // Get the input element and split the content into an array of words
+      const wordInput = document.getElementById('wordInput');
+      const wordsArray = wordInput.value.split('\n').map(word => word.trim());
+
+      // Remove empty words (if any)
+      const filteredWords = wordsArray.filter(word => word !== '');
+
+      // Concatenate the words using a comma as a separator
+      const result = filteredWords.join(',');
+
+      // Display the result in the HTML
+      const resultElement = document.getElementById('result');
+      resultElement.textContent = result;
+      copyToClipboard() 
+    }
+
+    function copyToClipboard() {
+      const resultElement = document.getElementById('result');
+      const textToCopy = resultElement.textContent;
+
+      if (textToCopy) {
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = textToCopy;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextArea);
+      }
+    }
+
+  </script>
+</body>
+</html>
