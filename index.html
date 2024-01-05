@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Concatenate Words</title>
 </head>
+
 <body>
   <h1>Concatenate Words</h1>
-</br>
-</br>
+  </br>
+
+  <div style="display: flex; justify-content: space-between; width: 337px; align-items: center;">
+    <form>
+      <label>
+        <input type="radio" name="separator" value="," id="commaRadio" checked>
+        Comma (,)
+    </label>
+    <br>
+    <label>
+      <input type="radio" name="separator" value=" " id="emptyRadio">
+      Space ( )
+    </label>
+  </form>
   <div>
-    <textarea id="wordInput" rows="10" cols="30" placeholder="Paste words here, one per line" oninput="concatenateWords()"></textarea>
+    <button onclick="pasteClipboardContent()">Paste content</button>
+    <button id="copyButton" onclick="copyToClipboard()">Copy result</button>
   </div>
-  <button id="copyButton" onclick="copyToClipboard()">Copy</button>
-  <p>Result:</p>
-  <p id="result"></p>
+</div>
+
+  <div style="display: flex; gap:20px; ">
+    <div>
+      <div>
+        <textarea id="wordInput" rows="10" cols="30" placeholder="Paste words here, one per line"
+          oninput="concatenateWords()"></textarea>
+      </div>
+    </div>
+    <div style="border: 1px solid gray; width: 500px;">
+      <!-- <div style="display: flex; margin-top: -30px; margin-bottom: 8px;">
+      </div> -->
+      <p id="result" style="margin: 0 5px;"></p>
+    </div>
+  </div>
+
 
   <script>
     function concatenateWords() {
+      const separator = document.querySelector('input[name="separator"]:checked').value || ' ';
+
       // Get the input element and split the content into an array of words
       const wordInput = document.getElementById('wordInput');
       const wordsArray = wordInput.value.split('\n').map(word => word.trim());
@@ -24,12 +54,12 @@
       const filteredWords = wordsArray.filter(word => word !== '');
 
       // Concatenate the words using a comma as a separator
-      const result = filteredWords.join(',');
+      const result = filteredWords.join(separator);
 
       // Display the result in the HTML
       const resultElement = document.getElementById('result');
       resultElement.textContent = result;
-      copyToClipboard() 
+      copyToClipboard()
     }
 
     function copyToClipboard() {
@@ -46,6 +76,35 @@
       }
     }
 
+    // Add event listener to the radio group
+    var radioGroup = document.getElementsByName("separator");
+    radioGroup.forEach(function(radio) {
+        radio.addEventListener("change", concatenateWords);
+    });
+
+    function pasteClipboardContent() {
+      document.getElementById("wordInput").textContent = '';
+        // Check if the Clipboard API is available
+        if (navigator.clipboard) {
+            // Read text from the clipboard
+            setTimeout(() => {
+              navigator.clipboard.readText()
+              .then(clipboardText => {
+                    // Set the content of the div
+                    document.getElementById("wordInput").textContent = clipboardText;
+                    concatenateWords();
+                })
+                .catch(error => {
+                    console.error('Unable to read from clipboard', error);
+                });
+              }, 200);
+              document.body.focus()
+        } else {
+            // Clipboard API not supported
+            console.error('Clipboard API not supported in this browser');
+        }
+    }
   </script>
 </body>
+
 </html>
