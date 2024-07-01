@@ -56,7 +56,7 @@
 
       // Get the input element and split the content into an array of words
       const wordInput = document.getElementById('wordInput');
-      const wordsArray = wordInput.value.split('\n').map(word => word.trim());
+      const wordsArray = wordInput.value.split(/[\s\n]+/).map(word => word.trim());
 
       // Remove empty words (if any)
       const filteredWords = wordsArray.filter(word => word !== '');
@@ -69,13 +69,15 @@
 
       // Highlight duplicates in the output div
       const highlightedTextElement = document.getElementById('highlightedText');
-      highlightedTextElement.innerHTML = wordsArray.map(word => {
+      const highlightedText = wordInput.value.split(/[\s\n]+/).map(word => {
         if (wordCounts[word] > 1) {
           return `<span class="duplicate">${word}</span>`;
         } else {
           return word;
         }
-      }).join('\n');
+      }).join(' ');
+
+      highlightedTextElement.innerHTML = highlightedText.replace(/\n/g, '<br>');
 
       // Remove duplicates for concatenation
       const uniqueWords = [...new Set(filteredWords)];
@@ -109,7 +111,7 @@
     });
 
     function pasteClipboardContent() {
-      document.getElementById("wordInput").textContent = '';
+      document.getElementById("wordInput").value = '';
         // Check if the Clipboard API is available
         if (navigator.clipboard) {
             // Read text from the clipboard
